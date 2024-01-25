@@ -4,9 +4,15 @@ import java.awt.EventQueue;
 import javax.swing.JFrame;
 import javax.swing.JPanel;
 import javax.swing.border.EmptyBorder;
+
+import DAO.CredencialesDao;
+import models.Credencial;
+import utils.Factory;
+
 import java.awt.Color;
 import javax.swing.JLabel;
 import javax.swing.JOptionPane;
+import javax.persistence.EntityManager;
 import javax.swing.ImageIcon;
 import javax.swing.JTextField;
 import javax.swing.JSeparator;
@@ -235,18 +241,27 @@ public class Login extends JFrame {
 	}
 	
 	private void Login() {
-		 String Usuario= "admin";
-	     String Contraseña="admin";
-
-	        String contrase=new String (txtContrasena.getPassword());
-
-	        if(txtUsuario.getText().equals(Usuario) && contrase.equals(Contraseña)){
-	            MenuUsuario menu = new MenuUsuario();
-	            menu.setVisible(true);
-	            dispose();	 
-	        }else {
-	            JOptionPane.showMessageDialog(this, "Usuario o Contraseña no válidos");
-	        }
+		
+		String usuario = txtUsuario.getText();
+		String contrasena = new String (txtContrasena.getPassword());
+		
+		Credencial credencial = new Credencial();
+		credencial.setUsuario(usuario);
+		credencial.setContraseña(contrasena);
+		
+		EntityManager em = Factory.getEntityManager();
+		
+		CredencialesDao credencialesDao = new CredencialesDao(em);
+		
+		boolean confirmacionDeCredenciales = credencialesDao.validarUsuarioYcontrasena(credencial);
+		
+		if(confirmacionDeCredenciales) {
+			  MenuUsuario menu = new MenuUsuario();
+	          menu.setVisible(true);
+	          dispose();	
+		}else {
+			JOptionPane.showMessageDialog(this, "Usuario o Contraseña no válidos");
+		}
 	} 
 	 private void headerMousePressed(java.awt.event.MouseEvent evt) {
 	        xMouse = evt.getX();
