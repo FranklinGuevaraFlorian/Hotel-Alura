@@ -254,7 +254,7 @@ public class Login extends JFrame {
 		CredencialesDao credencialesDao = new CredencialesDao(em);
 		
 		boolean confirmacionDeCredenciales = credencialesDao.validarUsuarioYcontrasena(credencial);
-		
+		em.close();
 		if(confirmacionDeCredenciales) {
 			  MenuUsuario menu = new MenuUsuario();
 	          menu.setVisible(true);
